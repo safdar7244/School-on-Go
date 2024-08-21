@@ -1,7 +1,7 @@
 import { StyleSheet,Text,SafeAreaView,View,KeyboardAvoidingView,ScrollView} from 'react-native';
 import React,{useState}   from 'react'
 import { StatusBar } from 'expo-status-bar';
-import {Button,Input,Image,ListItem,Avatar} from "react-native-elements"
+import {Button,Input,Image,ListItem,Avatar} from "@rneui/themed"
 
 const CustomListItem = ({id,chatName,enterChat} ) => {
 
