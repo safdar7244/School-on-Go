@@ -46,3 +46,27 @@ export const SCREEN = {
   width: 375, // Default iPhone width
   height: 812, // Default iPhone height
 };
+
+// Navigation Constants
+export const NAVIGATION = {
+  headerHeight: 56,
+  tabBarHeight: 60,
+  animationDuration: 300,
+  gestureResponseDistance: 50,
+};
+
+// Header Styles
+export const HEADER_STYLES = {
+  default: {
+    backgroundColor: COLORS.primary,
+    elevation: 4,
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  transparent: {
+    backgroundColor: 'transparent',
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+};

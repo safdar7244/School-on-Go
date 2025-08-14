@@ -49,7 +49,7 @@ class AuthService {
             // Update user profile with display name
             await updateProfile(user, { displayName });
 
-            // Create user document in Firestore
+            // Try to create user document in Firestore
             const userProfile: Omit<UserProfile, 'uid'> = {
                 email: user.email!,
                 displayName,
@@ -57,11 +57,16 @@ class AuthService {
                 lastLoginAt: new Date(),
             };
 
-            await setDoc(doc(db, 'users', user.uid), {
-                ...userProfile,
-                createdAt: serverTimestamp(),
-                lastLoginAt: serverTimestamp(),
-            });
+            try {
+                await setDoc(doc(db, 'users', user.uid), {
+                    ...userProfile,
+                    createdAt: serverTimestamp(),
+                    lastLoginAt: serverTimestamp(),
+                });
+            } catch (firestoreError) {
+                // Firestore access failed, continue with Firebase Auth data only
+                console.warn('Firestore access failed during sign up:', firestoreError);
+            }
 
             return {
                 success: true,
@@ -86,18 +91,23 @@ class AuthService {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Update last login time
-            await setDoc(
-                doc(db, 'users', user.uid),
-                {
-                    lastLoginAt: serverTimestamp(),
-                },
-                { merge: true }
-            );
+            // Try to update last login time and get user profile from Firestore
+            let userData = null;
+            try {
+                await setDoc(
+                    doc(db, 'users', user.uid),
+                    {
+                        lastLoginAt: serverTimestamp(),
+                    },
+                    { merge: true }
+                );
 
-            // Get user profile from Firestore
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            const userData = userDoc.data();
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                userData = userDoc.data();
+            } catch (firestoreError) {
+                // Firestore access failed, continue with Firebase Auth data only
+                console.warn('Firestore access failed during sign in:', firestoreError);
+            }
 
             const userProfile: UserProfile = {
                 uid: user.uid,
@@ -157,6 +167,7 @@ class AuthService {
         if (!user) return null;
 
         try {
+            // Try to get user data from Firestore
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             const userData = userDoc.data();
 
@@ -168,8 +179,15 @@ class AuthService {
                 lastLoginAt: userData?.lastLoginAt?.toDate() || new Date(),
             };
         } catch (error) {
-            console.error('Error fetching user profile:', error);
-            return null;
+            // Firestore access failed, return profile from Firebase Auth only
+            console.warn('Firestore access failed, using Firebase Auth data only:', error);
+            return {
+                uid: user.uid,
+                email: user.email!,
+                displayName: user.displayName || '',
+                createdAt: new Date(user.metadata.creationTime || Date.now()),
+                lastLoginAt: new Date(user.metadata.lastSignInTime || Date.now()),
+            };
         }
     }
 
