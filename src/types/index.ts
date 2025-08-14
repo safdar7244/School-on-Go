@@ -56,6 +56,42 @@ export interface AcademicLink {
   description?: string;
 }
 
+// Service Types
+export interface AuthResult {
+  success: boolean;
+  user?: User;
+  error?: string;
+}
+
+export interface SignUpData {
+  email: string;
+  password: string;
+  displayName: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface FirestoreDocument {
+  id: string;
+  [key: string]: any;
+}
+
+export interface QueryOptions {
+  where?: Array<{
+    field: string;
+    operator: '==' | '!=' | '<' | '<=' | '>' | '>=' | 'array-contains' | 'in' | 'array-contains-any';
+    value: any;
+  }>;
+  orderBy?: Array<{
+    field: string;
+    direction: 'asc' | 'desc';
+  }>;
+  limit?: number;
+}
+
 // Navigation Types
 export type RootStackParamList = {
   Auth: undefined;
@@ -69,7 +105,7 @@ export type AuthStackParamList = {
 
 export type MainStackParamList = {
   Home: undefined;
-  Chat: undefined;
+  Chat: { roomId?: string };
   Faculty: undefined;
   Library: undefined;
   StudyLinks: undefined;
