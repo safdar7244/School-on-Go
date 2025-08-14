@@ -6,13 +6,15 @@ import {
   RefreshControl,
   Dimensions,
   StatusBar,
+  Text,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { FeatureCard, UserProfile } from '../../components';
-import { COLORS, SPACING } from '../../constants';
+import { COLORS, SPACING, FONT_SIZES } from '../../constants';
 
 type RootStackParamList = {
   Chat: undefined;
@@ -39,42 +41,42 @@ const FEATURES: FeatureItem[] = [
   {
     id: 'chat',
     title: 'Chat',
-    icon: 'chatbubbles-outline',
+    icon: 'chatbubbles',
     screen: 'Chat',
-    backgroundColor: '#E3F2FD',
-    iconColor: '#1976D2',
+    backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    iconColor: '#FFFFFF',
   },
   {
     id: 'faculty',
     title: 'Faculty',
-    icon: 'people-outline',
+    icon: 'people',
     screen: 'Faculty',
-    backgroundColor: '#F3E5F5',
-    iconColor: '#7B1FA2',
+    backgroundColor: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    iconColor: '#FFFFFF',
   },
   {
     id: 'library',
     title: 'Library',
-    icon: 'library-outline',
+    icon: 'library',
     screen: 'Library',
-    backgroundColor: '#E8F5E8',
-    iconColor: '#388E3C',
+    backgroundColor: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    iconColor: '#FFFFFF',
   },
   {
     id: 'studylinks',
     title: 'Study Links',
-    icon: 'link-outline',
+    icon: 'link',
     screen: 'StudyLinks',
-    backgroundColor: '#FFF3E0',
-    iconColor: '#F57C00',
+    backgroundColor: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    iconColor: '#FFFFFF',
   },
   {
     id: 'timetable',
     title: 'Timetable',
-    icon: 'calendar-outline',
+    icon: 'calendar',
     screen: 'Timetable',
-    backgroundColor: '#FFEBEE',
-    iconColor: '#D32F2F',
+    backgroundColor: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    iconColor: '#FFFFFF',
   },
 ];
 
@@ -119,27 +121,35 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
-      <UserProfile />
-      
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={[COLORS.primary]}
-            tintColor={COLORS.primary}
-          />
-        }
-        showsVerticalScrollIndicator={false}
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#667eea" />
+      <View style={{ paddingTop: insets.top, backgroundColor: '#667eea' }}>
+        <UserProfile />
+      </View>
+
+      <LinearGradient
+        colors={['#f8f9fa', '#e9ecef']}
+        style={styles.backgroundGradient}
       >
-        <View style={styles.featuresContainer}>
-          {renderFeatureGrid()}
-        </View>
-      </ScrollView>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[COLORS.primary]}
+              tintColor={COLORS.primary}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.featuresContainer}>
+            <Text style={styles.sectionTitle}>Quick Access</Text>
+            {renderFeatureGrid()}
+          </View>
+        </ScrollView>
+      </LinearGradient>
     </View>
   );
 };
@@ -148,6 +158,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  backgroundGradient: {
+    flex: 1,
   },
   scrollView: {
     flex: 1,
@@ -158,12 +171,19 @@ const styles = StyleSheet.create({
   },
   featuresContainer: {
     paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.lg,
+    paddingTop: SPACING.xl,
+  },
+  sectionTitle: {
+    fontSize: FONT_SIZES.xl,
+    fontWeight: '700',
+    color: COLORS.text,
+    marginBottom: SPACING.lg,
+    textAlign: 'center',
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.lg,
   },
   placeholder: {
     width: (width - SPACING.lg * 3) / 2,
