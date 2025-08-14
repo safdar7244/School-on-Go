@@ -111,3 +111,59 @@ export type MainStackParamList = {
   StudyLinks: undefined;
   Timetable: undefined;
 };
+
+// Additional Navigation Helper Types
+export type NavigationScreens = keyof MainStackParamList;
+
+export interface FeatureCardData {
+  id: string;
+  title: string;
+  icon: string;
+  screen: NavigationScreens;
+  color?: string;
+}
+// Program Types for Faculty Organization
+export type AcademicProgram = 'cyber-security' | 'data-science' | 'both';
+
+// Resource Category Types
+export type StudyResourceCategory = 'python' | 'sql' | 'general';
+export type AcademicLinkCategory = 'research' | 'career' | 'video' | 'books';
+
+// Message Types for Chat
+export type MessageType = 'text' | 'image' | 'file';
+
+// UI State Types
+export interface LoadingState {
+  isLoading: boolean;
+  error?: string;
+}
+
+export interface PaginationState {
+  page: number;
+  hasMore: boolean;
+  isLoadingMore: boolean;
+}
+
+// Form Validation Types
+export interface ValidationError {
+  field: string;
+  message: string;
+}
+
+export interface FormState<T> {
+  data: T;
+  errors: ValidationError[];
+  isValid: boolean;
+  isDirty: boolean;
+}
+
+// Network and Offline Types
+export interface NetworkState {
+  isConnected: boolean;
+  isInternetReachable: boolean;
+}
+
+export interface CacheState {
+  lastUpdated: Date;
+  isStale: boolean;
+}
