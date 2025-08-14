@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: FONT_SIZES.xl,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: '#667eea',
   },
   textContainer: {
     flex: 1,

@@ -8,11 +8,15 @@ import {
     KeyboardAvoidingView,
     Platform,
     ScrollView,
+    StatusBar,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Input, Button } from '@rneui/themed';
 import { useForm, Controller } from 'react-hook-form';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AuthStackParamList } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
@@ -73,21 +77,39 @@ const LoginScreen: React.FC = () => {
         navigation.navigate('SignUp');
     };
 
-    return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
-            <ScrollView
-                contentContainerStyle={styles.scrollContainer}
-                keyboardShouldPersistTaps="handled"
-            >
-                <View style={styles.header}>
-                    <Text style={styles.title}>Welcome Back</Text>
-                    <Text style={styles.subtitle}>Sign in to your account</Text>
-                </View>
+    const insets = useSafeAreaInsets();
 
-                <View style={styles.form}>
+    return (
+        <LinearGradient
+            colors={['#667eea', '#764ba2']}
+            style={styles.container}
+        >
+            <StatusBar barStyle="light-content" backgroundColor="#667eea" />
+            <KeyboardAvoidingView
+                style={[styles.keyboardContainer, { paddingTop: insets.top }]}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+                <ScrollView
+                    contentContainerStyle={styles.scrollContainer}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={styles.header}>
+                        <View style={styles.logoContainer}>
+                            <LinearGradient
+                                colors={['#ffffff', '#f8f9fa']}
+                                style={styles.logoCircle}
+                            >
+                                <Ionicons name="school" size={40} color="#667eea" />
+                            </LinearGradient>
+                        </View>
+                        <Text style={styles.title}>Welcome Back</Text>
+                        <Text style={styles.subtitle}>Sign in to continue your journey</Text>
+                    </View>
+
+                    <View style={styles.formContainer}>
+
+                        <View style={styles.form}>
                     <Controller
                         control={control}
                         name="email"
@@ -110,11 +132,12 @@ const LoginScreen: React.FC = () => {
                                 leftIcon={{
                                     name: 'email',
                                     type: 'material',
-                                    color: COLORS.textSecondary,
+                                    color: COLORS.primary,
                                 }}
                                 errorMessage={errors.email?.message}
                                 inputContainerStyle={styles.inputContainer}
                                 inputStyle={styles.input}
+                                containerStyle={styles.inputWrapper}
                             />
                         )}
                     />
@@ -139,17 +162,18 @@ const LoginScreen: React.FC = () => {
                                 leftIcon={{
                                     name: 'lock',
                                     type: 'material',
-                                    color: COLORS.textSecondary,
+                                    color: COLORS.primary,
                                 }}
                                 rightIcon={{
                                     name: showPassword ? 'visibility-off' : 'visibility',
                                     type: 'material',
-                                    color: COLORS.textSecondary,
+                                    color: COLORS.primary,
                                     onPress: () => setShowPassword(!showPassword),
                                 }}
                                 errorMessage={errors.password?.message}
                                 inputContainerStyle={styles.inputContainer}
                                 inputStyle={styles.input}
+                                containerStyle={styles.inputWrapper}
                             />
                         )}
                     />
@@ -158,34 +182,41 @@ const LoginScreen: React.FC = () => {
                         <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
                     </TouchableOpacity>
 
-                    <Button
-                        title="Sign In"
-                        onPress={handleSubmit(onSubmit)}
-                        loading={isLoading}
-                        disabled={!isValid || isLoading}
-                        buttonStyle={[
-                            styles.signInButton,
-                            (!isValid || isLoading) && styles.disabledButton,
-                        ]}
-                        titleStyle={styles.signInButtonText}
-                    />
-                </View>
+                            <TouchableOpacity
+                                style={styles.signInButton}
+                                onPress={handleSubmit(onSubmit)}
+                                disabled={!isValid || isLoading}
+                            >
+                                <LinearGradient
+                                    colors={['#43e97b', '#38f9d7']}
+                                    style={styles.buttonGradient}
+                                >
+                                    <Text style={styles.signInButtonText}>
+                                        {isLoading ? 'Signing In...' : 'Sign In'}
+                                    </Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
-                <View style={styles.footer}>
-                    <Text style={styles.footerText}>Don't have an account? </Text>
-                    <TouchableOpacity onPress={handleSignUp}>
-                        <Text style={styles.signUpText}>Sign Up</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+                    <View style={styles.footer}>
+                        <Text style={styles.footerText}>Don't have an account? </Text>
+                        <TouchableOpacity onPress={handleSignUp}>
+                            <Text style={styles.signUpText}>Sign Up</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </LinearGradient>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+    },
+    keyboardContainer: {
+        flex: 1,
     },
     scrollContainer: {
         flexGrow: 1,
@@ -194,26 +225,63 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: 'center',
-        marginBottom: SPACING.xl,
+        marginBottom: SPACING.xxl,
+    },
+    logoContainer: {
+        marginBottom: SPACING.lg,
+    },
+    logoCircle: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: COLORS.black,
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        elevation: 6,
     },
     title: {
         fontSize: FONT_SIZES.xxxl,
         fontWeight: 'bold',
-        color: COLORS.text,
+        color: COLORS.white,
         marginBottom: SPACING.sm,
-    },
-    subtitle: {
-        fontSize: FONT_SIZES.md,
-        color: COLORS.textSecondary,
         textAlign: 'center',
     },
-    form: {
+    subtitle: {
+        fontSize: FONT_SIZES.lg,
+        color: 'rgba(255, 255, 255, 0.9)',
+        textAlign: 'center',
+    },
+    formContainer: {
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: 20,
+        padding: SPACING.xl,
         marginBottom: SPACING.xl,
+        shadowColor: COLORS.black,
+        shadowOffset: {
+            width: 0,
+            height: 8,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 16,
+        elevation: 8,
+    },
+    form: {
+        marginBottom: SPACING.lg,
+    },
+    inputWrapper: {
+        marginBottom: SPACING.sm,
     },
     inputContainer: {
-        borderBottomWidth: 1,
+        borderBottomWidth: 2,
         borderBottomColor: COLORS.surface,
         paddingHorizontal: 0,
+        backgroundColor: 'transparent',
     },
     input: {
         fontSize: FONT_SIZES.md,
@@ -223,23 +291,34 @@ const styles = StyleSheet.create({
     forgotPassword: {
         alignSelf: 'flex-end',
         marginBottom: SPACING.lg,
-        marginTop: -SPACING.sm,
+        marginTop: SPACING.sm,
     },
     forgotPasswordText: {
         fontSize: FONT_SIZES.sm,
         color: COLORS.primary,
+        fontWeight: '600',
     },
     signInButton: {
-        backgroundColor: COLORS.primary,
-        borderRadius: 8,
-        paddingVertical: SPACING.md,
+        borderRadius: 12,
+        shadowColor: COLORS.black,
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        elevation: 6,
     },
-    disabledButton: {
-        backgroundColor: COLORS.textSecondary,
+    buttonGradient: {
+        borderRadius: 12,
+        paddingVertical: SPACING.md,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     signInButtonText: {
-        fontSize: FONT_SIZES.md,
-        fontWeight: '600',
+        fontSize: FONT_SIZES.lg,
+        fontWeight: '700',
+        color: COLORS.white,
     },
     footer: {
         flexDirection: 'row',
@@ -248,12 +327,13 @@ const styles = StyleSheet.create({
     },
     footerText: {
         fontSize: FONT_SIZES.md,
-        color: COLORS.textSecondary,
+        color: 'rgba(255, 255, 255, 0.9)',
     },
     signUpText: {
         fontSize: FONT_SIZES.md,
-        color: COLORS.primary,
-        fontWeight: '600',
+        color: COLORS.white,
+        fontWeight: '700',
+        textDecorationLine: 'underline',
     },
 });
 
