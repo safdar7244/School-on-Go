@@ -256,13 +256,13 @@ const SignUpScreen: React.FC = () => {
                 )}
               />
 
-              <View style={styles.passwordRequirements}>
+              {/* <View style={styles.passwordRequirements}>
                 <Text style={styles.requirementsTitle}>Password Requirements:</Text>
                 <Text style={styles.requirementText}>• At least 6 characters</Text>
                 <Text style={styles.requirementText}>• One uppercase letter</Text>
                 <Text style={styles.requirementText}>• One lowercase letter</Text>
                 <Text style={styles.requirementText}>• One number</Text>
-              </View>
+              </View> */}
 
               <TouchableOpacity
                 style={styles.signUpButton}

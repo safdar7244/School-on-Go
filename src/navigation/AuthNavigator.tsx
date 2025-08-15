@@ -43,7 +43,7 @@ const AuthNavigator: React.FC = () => {
         component={LoginScreen}
         options={{ 
           title: 'Welcome Back',
-          headerShown: true,
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -51,7 +51,7 @@ const AuthNavigator: React.FC = () => {
         component={SignUpScreen}
         options={{ 
           title: 'Create Account',
-          headerShown: true,
+          headerShown: false,
           presentation: 'card',
         }}
       />
